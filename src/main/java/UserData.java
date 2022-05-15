@@ -4,6 +4,13 @@ public class UserData {
     private String password;
     private String name;
 
+    public UserData() {
+        String email;
+        String password;
+        String name;
+    }
+
+
     public String getEmail() {
         return email;
     }

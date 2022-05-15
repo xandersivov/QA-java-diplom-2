@@ -1,5 +1,4 @@
 import com.github.javafaker.Faker;
-import com.google.gson.Gson;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
@@ -21,7 +20,6 @@ public class UserLoginTest {
     public String email;
     public String token;
     public int statusCode;
-    public String body;
     public String message;
 
     @Before
@@ -35,8 +33,7 @@ public class UserLoginTest {
         userData.setName(name);
         userData.setEmail(email);
         userData.setPassword(password);
-        body = new Gson().toJson(userData);
-        response = userApi.register(body);
+        response = userApi.register(userData);
         token = response.extract().path("accessToken");
     }
 
@@ -53,8 +50,7 @@ public class UserLoginTest {
         userData = new UserData();
         userData.setEmail(email);
         userData.setPassword(password);
-        body = new Gson().toJson(userData);
-        response = userApi.login(body);
+        response = userApi.login(userData);
         token = response.extract().path("accessToken");
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();
@@ -68,12 +64,10 @@ public class UserLoginTest {
         userData = new UserData();
         userData.setEmail("Failed@com");
         userData.setPassword("123456");
-        body = new Gson().toJson(userData);
-        response = userApi.login(body);
+        response = userApi.login(userData);
         token = response.extract().path("accessToken");
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();
-        //Assert
         Assert.assertEquals(message, SC_UNAUTHORIZED, statusCode);
         Assert.assertEquals("email or password are incorrect", message);
     }

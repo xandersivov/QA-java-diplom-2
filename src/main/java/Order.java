@@ -2,6 +2,11 @@ import java.util.ArrayList;
 
 public class Order {
 
+    public Order() {
+        ArrayList getIngredients;
+    }
+
+
     public ArrayList getIngredients() {
         return ingredients;
     }

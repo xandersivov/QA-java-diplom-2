@@ -1,5 +1,4 @@
 import com.github.javafaker.Faker;
-import com.google.gson.Gson;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
@@ -21,7 +20,6 @@ public class UserUpdateTest {
     public String userName;
     public String newEmail;
     public String newName;
-    public String body;
     public String updatedEmail;
     public String updatedName;
     public int statusCode;
@@ -39,6 +37,7 @@ public class UserUpdateTest {
         newName = faker.name().firstName().toLowerCase();
         newEmail = newName + "@yandex.ru";
         userData = new UserData();
+        userApi = new UserApi();
     }
 
     @After
@@ -52,8 +51,7 @@ public class UserUpdateTest {
     @DisplayName("Тест на измение данных пользователя (email) с авторизацией")
     public void testUpdateEmailAuthorized() {
         userData.setEmail(newEmail);
-        body = new Gson().toJson(userData);
-        updatedResponse = userApi.update(token, body);
+        updatedResponse = userApi.update(token, userData);
         updatedEmail = updatedResponse.extract().path("user.email");
         statusCode = updatedResponse.extract().statusCode();
         message = updatedResponse.extract().path("message");
@@ -65,8 +63,7 @@ public class UserUpdateTest {
     @DisplayName("Тест на измение данных пользователя (name) с авторизацией")
     public void testUpdateUserAuthorized() {
         userData.setName(newName);
-        body = new Gson().toJson(userData);
-        updatedResponse = userApi.update(token, body);
+        updatedResponse = userApi.update(token, userData);
         updatedName = updatedResponse.extract().path("user.name");
         statusCode = updatedResponse.extract().statusCode();
         message = updatedResponse.extract().path("message");
@@ -78,8 +75,7 @@ public class UserUpdateTest {
     @DisplayName("Тест на измение данных пользователя (email) без авторизации")
     public void testNotUpdateEmailUnAuthorized() {
         userData.setEmail(newEmail);
-        body = new Gson().toJson(userData);
-        updatedResponse = userApi.update("", body);
+        updatedResponse = userApi.update("", userData);
         updatedEmail = updatedResponse.extract().path("user.email");
         statusCode = updatedResponse.extract().statusCode();
         message = updatedResponse.extract().path("message");
@@ -91,8 +87,7 @@ public class UserUpdateTest {
     @DisplayName("Тест на измение данных пользователя (name) без авторизации")
     public void testNotUpdateUserUnAuthorized() {
         userData.setName(newName);
-        body = new Gson().toJson(userData);
-        updatedResponse = userApi.update("", body);
+        updatedResponse = userApi.update("", userData);
         updatedName = updatedResponse.extract().path("user.name");
         statusCode = updatedResponse.extract().statusCode();
         message = updatedResponse.extract().path("message");

@@ -5,13 +5,14 @@ import static io.restassured.RestAssured.given;
 
 public class OrderApi {
 
+    private Order order;
 
-    @Step ("Request to create an order")
-    public ValidatableResponse createOrder(String token, String body) {
+    @Step("Request to create an order")
+    public ValidatableResponse createOrder(String token, Order order) {
         return given()
                 .spec(Api.getApi())
                 .auth().oauth2(token)
-                .body(body)
+                .body(order)
                 .when()
                 .post("orders")
                 .then();

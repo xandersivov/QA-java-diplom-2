@@ -1,4 +1,3 @@
-import com.google.gson.Gson;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
@@ -15,7 +14,6 @@ public class CreateOrderTest {
     private OrderApi orderApi;
     private Ingredients ingredients;
 
-    public String body;
     public int statusCode;
     public String message;
     public String token;
@@ -44,8 +42,7 @@ public class CreateOrderTest {
     @DisplayName("Тест на создание заказа и с авторизацией")
     public void testCreateOrderAuthorized() {
         order.setIngredients(ingredients.getRandomList());
-        body = new Gson().toJson(order);
-        ValidatableResponse response = orderApi.createOrder(token, body);
+        ValidatableResponse response = orderApi.createOrder(token, order);
         statusCode = response.extract().statusCode();
         message = response.extract().path("message");
         Assert.assertEquals(message, SC_OK, statusCode);
@@ -57,8 +54,7 @@ public class CreateOrderTest {
     @DisplayName("Тест на создание заказа и без авторизацией")
     public void testCreateOrderUnAuthorized() {
         order.setIngredients(ingredients.getRandomList());
-        body = new Gson().toJson(order);
-        ValidatableResponse response = orderApi.createOrder("", body);
+        ValidatableResponse response = orderApi.createOrder("", order);
         statusCode = response.extract().statusCode();
         message = response.extract().path("message");
         Assert.assertEquals(message, SC_OK, statusCode);
@@ -68,8 +64,7 @@ public class CreateOrderTest {
     @DisplayName("Тест на создание заказа без ингридентов")
     @Test
     public void testCreateOrderWithNoIngredients() {
-        body = new Gson().toJson(order.getIngredients());
-        ValidatableResponse response = orderApi.createOrder(token, body);
+        ValidatableResponse response = orderApi.createOrder(token, order);
         statusCode = response.extract().statusCode();
         Assert.assertEquals(SC_BAD_REQUEST, statusCode);
     }
@@ -78,8 +73,7 @@ public class CreateOrderTest {
     @Test
     public void testCreateOrderWithInvalidHash() {
         order.setIngredients(ingredients.getRandomInvalidList());
-        body = new Gson().toJson(order);
-        ValidatableResponse response = orderApi.createOrder(token, body);
+        ValidatableResponse response = orderApi.createOrder(token, order);
         statusCode = response.extract().statusCode();
         Assert.assertEquals(SC_INTERNAL_SERVER_ERROR, statusCode);
     }

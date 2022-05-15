@@ -1,4 +1,3 @@
-import com.google.gson.Gson;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
@@ -14,7 +13,6 @@ public class GetOrderTest {
     private UserApi userApi;
     private OrderApi orderApi;
 
-    public String body;
     public int statusCode;
     public String token;
 
@@ -29,8 +27,7 @@ public class GetOrderTest {
         token = token.replaceAll("Bearer", "").trim();
 
         order.setIngredients(ingredients.getRandomList());
-        body = new Gson().toJson(order);
-        orderApi.createOrder(token, body);
+        orderApi.createOrder(token, order);
     }
 
     @After

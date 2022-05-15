@@ -1,5 +1,4 @@
 import com.github.javafaker.Faker;
-import com.google.gson.Gson;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
@@ -22,7 +21,6 @@ public class UserCreateTest {
     public String token;
     public int statusCode;
     public String message;
-    public String body;
 
     @Before
     public void setUp() {
@@ -47,8 +45,7 @@ public class UserCreateTest {
         userData.setName(name);
         userData.setEmail(email);
         userData.setPassword(password);
-        body = new Gson().toJson(userData);
-        response = userApi.register(body);
+        response = userApi.register(userData);
         token = response.extract().path("accessToken");
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();
@@ -62,10 +59,9 @@ public class UserCreateTest {
         userData.setName(name);
         userData.setEmail(email);
         userData.setPassword(password);
-        body = new Gson().toJson(userData);
-        response = userApi.register(body);
+        response = userApi.register(userData);
         token = response.extract().path("accessToken");
-        ValidatableResponse testResponse = userApi.register(body);
+        ValidatableResponse testResponse = userApi.register(userData);
         message = testResponse.extract().path("message");
         statusCode = testResponse.extract().statusCode();
         Assert.assertEquals(message, SC_FORBIDDEN, statusCode);
@@ -78,8 +74,7 @@ public class UserCreateTest {
         userData.setName(name);
         userData.setEmail(null);
         userData.setPassword(password);
-        body = new Gson().toJson(userData);
-        response = userApi.register(body);
+        response = userApi.register(userData);
         token = response.extract().path("accessToken");
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();

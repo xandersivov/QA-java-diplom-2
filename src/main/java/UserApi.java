@@ -1,5 +1,4 @@
 import com.github.javafaker.Faker;
-import com.google.gson.Gson;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
@@ -15,7 +14,7 @@ public class UserApi {
     private ValidatableResponse response;
 
     @Step("Create valid user registration request body")
-    public String createValidRegistrationRequestBody() {
+    public UserData createValidRegistrationRequestBody() {
         userData = new UserData();
         faker = new Faker();
         name = faker.name().firstName();
@@ -24,15 +23,15 @@ public class UserApi {
         userData.setName(name);
         userData.setEmail(email);
         userData.setPassword(password);
-        return new Gson().toJson(userData);
+        return userData;
     }
 
     @Step("Create valid user authorization request body")
-    public String createValidAuthRequestBody(String userEmail, String userPassword) {
+    public UserData createValidAuthRequestBody(String userEmail, String userPassword) {
         userData = new UserData();
         userData.setEmail(userEmail);
         userData.setPassword(userPassword);
-        return new Gson().toJson(userData);
+        return userData;
     }
 
     @Step("Register valid user")
@@ -51,7 +50,7 @@ public class UserApi {
     }
 
     @Step("user registration request")
-    public ValidatableResponse register(String body) {
+    public ValidatableResponse register(UserData body) {
         return given().spec(Api.getApi()).body(body).when().post("auth/register").then();
     }
 
@@ -68,23 +67,23 @@ public class UserApi {
     }
 
     @Step("user authorization request")
-    public ValidatableResponse login(String body) {
+    public ValidatableResponse login(UserData userData) {
         return given()
                 .spec(Api.getApi())
-                .body(body)
+                .body(userData)
                 .when()
                 .post("auth/login")
                 .then();
     }
 
     @Step("user data edition request")
-    public ValidatableResponse update(String token, String body) {
+    public ValidatableResponse update(String token, UserData userData) {
         return given()
                 .spec(Api.getApi())
                 .auth()
                 .oauth2(token)
                 .and()
-                .body(body)
+                .body(userData)
                 .when()
                 .patch("auth/user")
                 .then();
