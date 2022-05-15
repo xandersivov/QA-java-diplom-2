@@ -1,10 +1,14 @@
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.apache.http.HttpStatus.SC_FORBIDDEN;
+import static org.apache.http.HttpStatus.SC_OK;
 
 public class UserCreateTest {
 
@@ -37,8 +41,8 @@ public class UserCreateTest {
         }
     }
 
-    //создать уникального пользователя
     @Test
+    @DisplayName("Тест создание уникального пользователя")
     public void testCreateUniqueUser() {
         userData.setName(name);
         userData.setEmail(email);
@@ -48,12 +52,12 @@ public class UserCreateTest {
         token = response.extract().path("accessToken");
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();
-        Assert.assertEquals(message, 200, statusCode);
+        Assert.assertEquals(message, SC_OK, statusCode);
         Assert.assertTrue(message, response.extract().path("success"));
     }
 
-    //создать пользователя, который уже зарегистрирован
     @Test
+    @DisplayName("Тест создание пользователя, который уже зарегистрирован")
     public void testCreateNotUniqueUser() {
         userData.setName(name);
         userData.setEmail(email);
@@ -64,12 +68,12 @@ public class UserCreateTest {
         ValidatableResponse testResponse = userApi.register(body);
         message = testResponse.extract().path("message");
         statusCode = testResponse.extract().statusCode();
-        Assert.assertEquals(message, 403, statusCode);
+        Assert.assertEquals(message, SC_FORBIDDEN, statusCode);
         Assert.assertEquals("User already exists", message);
     }
 
-    //создать пользователя и не заполнить одно из обязательных полей(email)
     @Test
+    @DisplayName("Тест создание пользователя, без заполнения обязательного поля(email)")
     public void testCreateUniqueUserWithInvalidRequest() {
         userData.setName(name);
         userData.setEmail(null);
@@ -79,7 +83,7 @@ public class UserCreateTest {
         token = response.extract().path("accessToken");
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();
-        Assert.assertEquals(message, 403, statusCode);
+        Assert.assertEquals(message, SC_FORBIDDEN, statusCode);
         Assert.assertEquals("Email, password and name are required fields", message);
     }
 }

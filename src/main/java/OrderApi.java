@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
@@ -5,8 +6,8 @@ import static io.restassured.RestAssured.given;
 public class OrderApi {
 
 
-    //запрос на создание заказа
-    public ValidatableResponse create(String token, String body) {
+    @Step ("Request to create an order")
+    public ValidatableResponse createOrder(String token, String body) {
         return given()
                 .spec(Api.getApi())
                 .auth().oauth2(token)
@@ -16,7 +17,7 @@ public class OrderApi {
                 .then();
     }
 
-    //получение списка заказов
+    @Step("Getting a list of orders")
     public ValidatableResponse getUserOrderList(String token) {
         return given()
                 .spec(Api.getApi())

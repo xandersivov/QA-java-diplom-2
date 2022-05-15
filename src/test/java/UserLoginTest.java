@@ -1,10 +1,14 @@
 import com.github.javafaker.Faker;
 import com.google.gson.Gson;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.apache.http.HttpStatus.SC_OK;
+import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 public class UserLoginTest {
 
@@ -43,7 +47,7 @@ public class UserLoginTest {
         }
     }
 
-    //логин под существующим пользователем
+    @DisplayName("Тест на логин под существующим пользователем")
     @Test
     public void testLoginWithValidUser() {
         userData = new UserData();
@@ -54,12 +58,12 @@ public class UserLoginTest {
         token = response.extract().path("accessToken");
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();
-        Assert.assertEquals(message, 200, statusCode);
+        Assert.assertEquals(message, SC_OK, statusCode);
         Assert.assertTrue(message, response.extract().path("success"));
     }
 
-    //логин с неверным логином и паролем
     @Test
+    @DisplayName("Тест на логин с неверным логином и паролем")
     public void testLoginWithInvalidUser() {
         userData = new UserData();
         userData.setEmail("Failed@com");
@@ -70,7 +74,7 @@ public class UserLoginTest {
         message = response.extract().path("message");
         statusCode = response.extract().statusCode();
         //Assert
-        Assert.assertEquals(message, 401, statusCode);
+        Assert.assertEquals(message, SC_UNAUTHORIZED, statusCode);
         Assert.assertEquals("email or password are incorrect", message);
     }
 }
