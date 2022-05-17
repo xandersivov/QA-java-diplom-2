@@ -1,6 +1,9 @@
+package api;
+
 import com.github.javafaker.Faker;
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
+import pogo.UserData;
 
 import static io.restassured.RestAssured.given;
 

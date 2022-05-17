@@ -1,3 +1,5 @@
+package pogo;
+
 public class UserData {
 
     private String email;

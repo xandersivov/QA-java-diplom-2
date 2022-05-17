@@ -1,5 +1,8 @@
+package api;
+
 import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
+import pogo.Order;
 
 import static io.restassured.RestAssured.given;
 
